@@ -1,8 +1,15 @@
 import cv2, os
-from flask import Flask, send_file
+from flask import Flask, send_file, request
 from waitress import serve
 
 app = Flask(__name__)
+
+def validate_args(args, dict):
+    for key in dict:
+        val = args.get(key)
+        if not val or not getattr(val, dict[key])():
+            return False
+    return True
 
 def encode(arr):
     encoded = []
@@ -17,8 +24,9 @@ def encode(arr):
     return encoded
 
 def make_file(size=(48,36)):
+    print("Creating new file")
     file = open('vid.txt','w')
-    file.write(str(size))
+    file.write(str(size)+"\n")
     cap = cv2.VideoCapture('badapple.mp4')
     while True:
         ret, frame = cap.read()
@@ -37,8 +45,17 @@ def make_file(size=(48,36)):
 
 @app.route('/txt', methods=["GET"])
 def send():
-    if not os.path.exists('vid.txt') or os.path.getsize('vid.txt') == 0:
-        make_file()
+    size = (48,36)
+    if request.args and validate_args(request.args, {"w":"isdigit","h":"isdigit"}):
+        size = abs(int(request.args['w'])),abs(int(request.args['h']))
+    
+    if os.path.exists('vid.txt'):
+        f = open('vid.txt', 'r')
+        info = f.readline(); f.close()
+        if len(info) == 0 or info.lstrip().rstrip() != str(size):
+            make_file()
+    else: make_file()
+    
     return send_file('vid.txt')
     
 if __name__ == "__main__":
