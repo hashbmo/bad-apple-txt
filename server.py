@@ -37,7 +37,7 @@ def make_file(size=(48,36)):
 
 @app.route('/txt', methods=["GET"])
 def send():
-    if os.path.getsize('vid.txt') == 0:
+    if not os.path.exists('vid.txt') or os.path.getsize('vid.txt') == 0:
         make_file()
     return send_file('vid.txt')
     
