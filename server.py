@@ -18,6 +18,7 @@ def encode(arr):
 
 def make_file(size=(48,36)):
     file = open('vid.txt','w')
+    file.write(str(size))
     cap = cv2.VideoCapture('badapple.mp4')
     while True:
         ret, frame = cap.read()
@@ -31,6 +32,7 @@ def make_file(size=(48,36)):
         for x in encoded: line += f'[{str(x[0])+"."+str(x[1])}]'
         line += "_"
         file.write(line)
+    file.close()
     cap.release()
 
 @app.route('/txt', methods=["GET"])
