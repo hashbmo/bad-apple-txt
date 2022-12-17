@@ -7,8 +7,9 @@
   - Open ba_dev.rbxl and click play
   - Follow the on screen prompt to begin video playback
 
-#### Notes
+### Notes
 
 - Required libraries: opencv-python, waitress, flask
 - Make sure you have these installed before you attempt to run server.py
 
+![](Thumbnail.png)
